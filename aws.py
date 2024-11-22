@@ -67,6 +67,12 @@ import time
 import json
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import grovepi
+import boto3
+
+# Create a boto3 client for IoT SiteWise
+client = boto3.client('iotsitewise')
+
+# Define the entries you want to send in the batch
 
 # GrovePi sensor setup
 temp_sensor = 4  # digital port 4
@@ -88,10 +94,51 @@ while True:
     try:
         [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
         payload = {"temperature": temp, "timestamp": time.time()}
-        client.publish("grovepi/sensors", json.dumps(payload), 1)
+        # client.publish("grovepi/sensors", json.dumps(payload), 1)
+        entries = [
+            {
+                'assetId': 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92',
+                'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',     # The property ID
+                'value': {
+                    'value': {
+                        'doubleValue': temp         # The value to put (e.g., double, integer, string, etc.)
+                    },
+                    'timestamp': {
+                        'timeInSeconds': int(time.time()),  # The timestamp in seconds (e.g., Unix timestamp)
+                        'offsetInNanos': 0           # The timestamp offset in nanoseconds
+                    }
+                }
+            },
+        ]
+
+        # Call the BatchPutAssetPropertyValue API
+        response = client.batch_put_asset_property_value(
+            entries=entries
+        )
+
         print("Data published:", payload)
         time.sleep(5)  # Adjust as needed
     except KeyboardInterrupt:
         break
     except Exception as e:
         print("Error:", e)
+
+
+# aws iotsitewise batch-put-asset-property-value --entries '[ 
+#   {
+    
+#     "assetId": "f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92",
+#     "entryId": "1236",
+#     "propertyId": "dd024614-b04b-4820-91e9-48442c8982bf",
+#     "propertyValues": [
+#       {
+#         "value": { "doubleValue": 25 },
+#         "timestamp": { "timeInSeconds": 1732278759}
+#       }
+#     ]
+#   }
+# ]'
+
+# aws sts assume-role \
+#     --role-arn arn:arn:aws:iam::863518420748:role/service-role/new_role \
+#     --role-session-name Session1
