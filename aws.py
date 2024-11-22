@@ -45,8 +45,8 @@ def send_to_sitewise(asset_id, property_id, value):
     )
 
 # Main Loop
-ASSET_ID = "30195743-fec1-4685-83b6-258326029aa8"
-PROPERTY_ID_TEMP = "Yee288f99-f1dc-4124-a346-c85e12f6c305"
+ASSET_ID = "f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92"
+PROPERTY_ID_TEMP = "ee288f99-f1dc-4124-a346-c85e12f6c305"
 
 try:
     while True:
