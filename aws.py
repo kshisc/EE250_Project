@@ -101,16 +101,13 @@ while True:
                 'assetId': 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92',
                 "entryId": str(entry_id),
                 'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',    
-                'propertyValues': {
-                    'value': {
-                        'doubleValue': temp   
-                    },
-                    'timestamp': {
-                        'timeInSeconds': int(time.time()), 
-                        'offsetInNanos': 0          
+                'propertyValues': [
+                    {
+                        'value': { 'doubleValue': temp },
+                        'timestamp': { 'timeInSeconds': int(time.time()) }
                     }
-                }
-            },
+                ]
+            }
         ]
 
         # Call the BatchPutAssetPropertyValue API
@@ -141,6 +138,7 @@ while True:
 #     ]
 #   }
 # ]'
+
 
 # aws sts assume-role \
 #     --role-arn arn:arn:aws:iam::863518420748:role/service-role/new_role \
