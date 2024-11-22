@@ -90,6 +90,7 @@ mqtt_client.configureMQTTOperationTimeout(5)
 # Connect to AWS IoT Core
 mqtt_client.connect()
 
+entry_id = 0
 while True:
     try:
         [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
@@ -98,14 +99,15 @@ while True:
         entries = [
             {
                 'assetId': 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92',
-                'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',     # The property ID
-                'value': {
+                "entryId": str(entry_id),
+                'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',    
+                'propertyValues': {
                     'value': {
-                        'doubleValue': temp         # The value to put (e.g., double, integer, string, etc.)
+                        'doubleValue': temp   
                     },
                     'timestamp': {
-                        'timeInSeconds': int(time.time()),  # The timestamp in seconds (e.g., Unix timestamp)
-                        'offsetInNanos': 0           # The timestamp offset in nanoseconds
+                        'timeInSeconds': int(time.time()), 
+                        'offsetInNanos': 0          
                     }
                 }
             },
@@ -118,6 +120,7 @@ while True:
 
         print("Data published:", payload)
         time.sleep(5)  # Adjust as needed
+        entry_id += 1
     except KeyboardInterrupt:
         break
     except Exception as e:
