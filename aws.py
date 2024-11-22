@@ -70,7 +70,7 @@ import grovepi
 import boto3
 
 # Create a boto3 client for IoT SiteWise
-client = boto3.client('iotsitewise')
+sitewise_client = boto3.client('iotsitewise')
 
 # Define the entries you want to send in the batch
 
@@ -78,17 +78,17 @@ client = boto3.client('iotsitewise')
 temp_sensor = 4  # digital port 4
 
 # AWS IoT configuration
-client = AWSIoTMQTTClient("RPi")
-client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
-client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
+mqtt_client = AWSIoTMQTTClient("RPi")
+mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
+mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
 
-client.configureOfflinePublishQueueing(-1)
-client.configureDrainingFrequency(2)
-client.configureConnectDisconnectTimeout(10)
-client.configureMQTTOperationTimeout(5)
+mqtt_client.configureOfflinePublishQueueing(-1)
+mqtt_client.configureDrainingFrequency(2)
+mqtt_client.configureConnectDisconnectTimeout(10)
+mqtt_client.configureMQTTOperationTimeout(5)
 
 # Connect to AWS IoT Core
-client.connect()
+mqtt_client.connect()
 
 while True:
     try:
@@ -112,7 +112,7 @@ while True:
         ]
 
         # Call the BatchPutAssetPropertyValue API
-        response = client.batch_put_asset_property_value(
+        response = sitewise_client.batch_put_asset_property_value(
             entries=entries
         )
 
