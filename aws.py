@@ -1,114 +1,72 @@
-# import json
-# import time
-# from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-# import boto3
-# import grovepi
-
-# # AWS IoT Core Configuration
-# THING_NAME = "RPi"
-# CERTIFICATE_PATH = "RPi.cert.pem"
-# PRIVATE_KEY_PATH = "RPi.private.key"
-# CA_PATH = "root-CA.crt"
-# ENDPOINT = "alqez4fmof1su-ats.iot.us-east-1.amazonaws.com"
-
-# # AWS IoT SiteWise Client
-# sitewise_client = boto3.client("iotsitewise", region_name="us-east-1")
-
-# # GrovePi Sensor Configuration
-# temperature_sensor = 4  # Connect sensor to port D4
-# grovepi.pinMode(temperature_sensor, "INPUT")
-
-# # MQTT Client Setup
-# mqtt_client = AWSIoTMQTTClient(THING_NAME)
-# mqtt_client.configureEndpoint(ENDPOINT, 8883)
-# mqtt_client.configureCredentials(CA_PATH, PRIVATE_KEY_PATH, CERTIFICATE_PATH)
-# mqtt_client.connect()
-
-# # Function to send data to AWS IoT SiteWise
-# def send_to_sitewise(asset_id, property_id, value):
-#     timestamp = int(time.time() * 1000)  # Epoch in milliseconds
-#     sitewise_client.batch_put_asset_property_value(
-#         entries=[
-#             {
-#                 "entryId": "1",
-#                 "assetId": asset_id,
-#                 "propertyId": property_id,
-#                 "propertyValues": [
-#                     {
-#                         "value": {"doubleValue": value},
-#                         "timestamp": {"timeInSeconds": timestamp // 1000, "offsetInNanos": (timestamp % 1000) * 1_000_000},
-#                         "quality": "GOOD",
-#                     }
-#                 ],
-#             }
-#         ]
-#     )
-
-# # Main Loop
-# ASSET_ID = "f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92"
-# PROPERTY_ID_TEMP = "ee288f99-f1dc-4124-a346-c85e12f6c305"
-
-# try:
-#     while True:
-#         # Read sensor data
-#         temperature = grovepi.analogRead(temperature_sensor)
-        
-#         # Send to AWS IoT SiteWise
-#         send_to_sitewise(ASSET_ID, PROPERTY_ID_TEMP, temperature)
-        
-#         print(f"Temperature sent: {temperature}")
-#         time.sleep(5)
-
-# except KeyboardInterrupt:
-#     print("Exiting...")
-#     mqtt_client.disconnect()
-
-import time
-import json
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-import grovepi
 import boto3
+import time
+import grovepi
 
 # Create a boto3 client for IoT SiteWise
 sitewise_client = boto3.client('iotsitewise')
-
-# Define the entries you want to send in the batch
-
-# GrovePi sensor setup
-temp_sensor = 4  # digital port 4
 
 # AWS IoT configuration
 mqtt_client = AWSIoTMQTTClient("RPi")
 mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
 mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
-
-mqtt_client.configureOfflinePublishQueueing(-1)
-mqtt_client.configureDrainingFrequency(2)
-mqtt_client.configureConnectDisconnectTimeout(10)
-mqtt_client.configureMQTTOperationTimeout(5)
-
 # Connect to AWS IoT Core
 mqtt_client.connect()
 
-entry_id = 0
+# GrovePi sensor setup
+temp_sensor = 4  # digital port 4
+light_sensor = 0 # analog port 0
+led = 3 # digital port 3
+
+threshold = 10 # brightness threshold
+grovepi.pinMode(light_sensor,"INPUT")
+grovepi.pinMode(led,"OUTPUT")
+
+entry_id = 1
+asset_id = 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92'
+
 while True:
     try:
         [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
-        payload = {"temperature": temp, "timestamp": time.time()}
-        # client.publish("grovepi/sensors", json.dumps(payload), 1)
-        entries = [
+        sensor_value = grovepi.analogRead(light_sensor)
+        resistance = (float)(1023 - sensor_value) * 10 / sensor_value
+        if resistance > threshold:
+            grovepi.digitalWrite(led,0) # LED off
+        else:
+            grovepi.digitalWrite(led,1) # LED on
+
+        properties = [
             {
-                'assetId': 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92',
-                "entryId": str(entry_id),
-                'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',    
-                'propertyValues': [
-                    {
-                        'value': { 'doubleValue': temp },
-                        'timestamp': { 'timeInSeconds': int(time.time()) }
-                    }
-                ]
+                'propertyId': 'ee288f99-f1dc-4124-a346-c85e12f6c305', # temperature
+                'value': { 'doubleValue': temp },  
+            },
+            {
+                'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',  # humidity
+                'value': { 'doubleValue': humidity },  # Value for Property 2
+            },
+            {
+                'propertyId': '85b95849-2117-4eff-844a-c70f0473308b',  # light
+                'value': { 'doubleValue': resistance },  # Value for Property 3
             }
         ]
+
+        # Create the entries list for the batch request
+        entries = []
+        for prop in properties:
+            entries.append({
+                'assetId': asset_id,
+                'entryId': str(entry_id),
+                'propertyId': prop['propertyId'],
+                'propertyValues': [
+                    {
+                        'value': prop['value'],
+                        'timestamp': {
+                            'timeInSeconds': int(time.time())
+                        }
+                    }
+                ]
+            })
+            entry_id += 1  # Increment entry ID for each property
 
         # Call the BatchPutAssetPropertyValue API
         response = sitewise_client.batch_put_asset_property_value(
