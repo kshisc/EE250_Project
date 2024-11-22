@@ -63,18 +63,35 @@
 #     print("Exiting...")
 #     mqtt_client.disconnect()
 
+import time
+import json
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-import logging
+import grovepi
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
+# GrovePi sensor setup
+temp_sensor = 4  # digital port 4
 
-# Initialize the MQTT client
-mqtt_client = AWSIoTMQTTClient("RPi")
-mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
-mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
+# AWS IoT configuration
+client = AWSIoTMQTTClient("RPi")
+client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
+client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
 
-# Set the keep-alive interval (optional)
-mqtt_client.connect(keepAliveIntervalSecond=60)
+client.configureOfflinePublishQueueing(-1)
+client.configureDrainingFrequency(2)
+client.configureConnectDisconnectTimeout(10)
+client.configureMQTTOperationTimeout(5)
 
-print("Connected to AWS IoT Core")
+# Connect to AWS IoT Core
+client.connect()
+
+while True:
+    try:
+        [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
+        payload = {"temperature": temp, "timestamp": time.time()}
+        client.publish("grovepi/sensors", json.dumps(payload), 1)
+        print("Data published:", payload)
+        time.sleep(5)  # Adjust as needed
+    except KeyboardInterrupt:
+        break
+    except Exception as e:
+        print("Error:", e)
