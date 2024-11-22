@@ -73,7 +73,7 @@ while True:
             entries=entries
         )
 
-        print("Data published:", payload)
+        print("Data published:", entry_id)
         time.sleep(5)  # Adjust as needed
         entry_id += 1
     except KeyboardInterrupt:
