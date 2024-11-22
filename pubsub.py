@@ -105,7 +105,7 @@ if __name__ == '__main__':
     print("Connected!")
 
     message_count = cmdData.input_count
-    message_topic = cmdData.input_topic
+    message_topic = "grovepi/sensors"
     message_string = cmdData.input_message
 
     # Subscribe
