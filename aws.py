@@ -74,8 +74,7 @@ while True:
         )
 
         print("Data published:", entry_id)
-        time.sleep(5)  # Adjust as needed
-        entry_id += 1
+        time.sleep(1)  # Adjust as needed
     except KeyboardInterrupt:
         break
     except Exception as e:
