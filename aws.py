@@ -36,8 +36,8 @@ while True:
         [temp,hum] = grovepi.dht(temp_sensor,0)  # blue sensor
         sensor_value = grovepi.analogRead(light_sensor)
         resistance = (float)(1023 - sensor_value) * 10 / sensor_value
-        lux = round(500 / resistance,2)
-        if resistance > threshold:
+        lux = round(500 / resistance, 2)
+        if lux > threshold:
             grovepi.digitalWrite(led,1) # LED on
         else:
             grovepi.digitalWrite(led,0) # LED off
@@ -81,7 +81,7 @@ while True:
 
         payload = [temp,hum,lux]
         print("Data published:", payload)
-        time.sleep(1)  # Adjust as needed
+        time.sleep(2)  # Adjust as needed
     except KeyboardInterrupt:
         break
     except Exception as e:
