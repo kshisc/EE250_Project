@@ -1,3 +1,5 @@
+# testing the grovepi sensors
+
 import grovepi
 import math
 import time
