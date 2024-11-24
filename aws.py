@@ -1,23 +1,24 @@
-# sending sensor data to aws sitewise
+# Sending sensor data to AWS SiteWise and CloudWatch
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import boto3
-import time
 import grovepi
+import time
+import json
 import warnings
 
 warnings.filterwarnings("ignore")
 
+# AWS IoT configuration
+mqtt_client = AWSIoTMQTTClient("RPi")
+mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
+mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
+
+# Connect to AWS IoT Core
+mqtt_client.connect()
+
 # Create a boto3 client for IoT SiteWise
 sitewise_client = boto3.client('iotsitewise')
-
-# # AWS IoT configuration
-# mqtt_client = AWSIoTMQTTClient("RPi")
-# mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
-# mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
-
-# # Connect to AWS IoT Core
-# mqtt_client.connect()
 
 # GrovePi sensor setup
 temp_sensor = 4  # digital port 4
@@ -33,6 +34,7 @@ asset_id = 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92'
 
 while True:
     try:
+        # Collect sensor data
         [temp,hum] = grovepi.dht(temp_sensor,0)  # blue sensor
         sensor_value = grovepi.analogRead(light_sensor)
         resistance = (float)(1023 - sensor_value) * 10 / sensor_value
@@ -42,6 +44,7 @@ while True:
         else:
             grovepi.digitalWrite(led,0) # LED off
         
+        # Format data to send
         properties = [
             {
                 'propertyId': 'ee288f99-f1dc-4124-a346-c85e12f6c305', # temperature
@@ -79,8 +82,12 @@ while True:
             entries=entries
         )
 
-        payload = [temp,hum,lux]
-        print("Data published:", payload)
+        payload = {"temperature": temp, "humidity": hum, "lux": lux, "timestamp": time.time()}
+        mqtt_client.publish("grovepi/sensors", json.dumps(payload), 1)
+
+        output = [temp,hum,lux]
+        print("Data published:", output)
+
         time.sleep(2)  # Adjust as needed
     except KeyboardInterrupt:
         break
