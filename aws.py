@@ -33,18 +33,14 @@ asset_id = 'f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92'
 
 while True:
     try:
-        print("before")
-        [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
+        [temp,hum] = grovepi.dht(temp_sensor,0)  # blue sensor
         sensor_value = grovepi.analogRead(light_sensor)
-        print("after:", time.time())
         resistance = (float)(1023 - sensor_value) * 10 / sensor_value
         lux = round(500 / resistance,2)
-        print("before")
         if resistance > threshold:
             grovepi.digitalWrite(led,1) # LED on
         else:
             grovepi.digitalWrite(led,0) # LED off
-        print("after:", time.time())
         
         properties = [
             {
@@ -53,7 +49,7 @@ while True:
             },
             {
                 'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',  # humidity
-                'value': { 'doubleValue': humidity }
+                'value': { 'doubleValue': hum }
             },
             {
                 'propertyId': '85b95849-2117-4eff-844a-c70f0473308b',  # light
@@ -83,7 +79,8 @@ while True:
             entries=entries
         )
 
-        print("Data published:", time.time())
+        payload = [temp,hum,lux]
+        print("Data published:", payload)
         time.sleep(1)  # Adjust as needed
     except KeyboardInterrupt:
         break
