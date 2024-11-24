@@ -74,6 +74,7 @@ while True:
             })
             entry_id += 1 
 
+        print("Data published:", time.time())
         # Call the BatchPutAssetPropertyValue API
         response = sitewise_client.batch_put_asset_property_value(
             entries=entries
