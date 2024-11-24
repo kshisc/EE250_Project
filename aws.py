@@ -6,7 +6,7 @@ import time
 import grovepi
 import warnings
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore")
 
 # Create a boto3 client for IoT SiteWise
 sitewise_client = boto3.client('iotsitewise')
@@ -36,7 +36,7 @@ while True:
         [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
         sensor_value = grovepi.analogRead(light_sensor)
         resistance = (float)(1023 - sensor_value) * 10 / sensor_value
-        lux = 500 / resistance
+        lux = round(500 / resistance,2)
         if resistance > threshold:
             grovepi.digitalWrite(led,1) # LED on
         else:
@@ -79,7 +79,7 @@ while True:
             entries=entries
         )
 
-        print("Data published:", entry_id)
+        print("Data published:", time.time())
         time.sleep(1)  # Adjust as needed
     except KeyboardInterrupt:
         break
@@ -91,7 +91,7 @@ while True:
 #   {
     
 #     "assetId": "f61fd66e-ccd5-4eb3-9bd8-9cf88ce84c92",
-#     "entryId": "1236",
+#     "entryId": "1237",
 #     "propertyId": "dd024614-b04b-4820-91e9-48442c8982bf",
 #     "propertyValues": [
 #       {
