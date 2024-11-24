@@ -36,30 +36,31 @@ while True:
         print("before")
         [temp,humidity] = grovepi.dht(temp_sensor,0)  # blue sensor
         sensor_value = grovepi.analogRead(light_sensor)
+        print("after:", time.time())
         resistance = (float)(1023 - sensor_value) * 10 / sensor_value
         lux = round(500 / resistance,2)
+        print("before")
         if resistance > threshold:
             grovepi.digitalWrite(led,1) # LED on
         else:
             grovepi.digitalWrite(led,0) # LED off
+        print("after:", time.time())
         
         properties = [
             {
                 'propertyId': 'ee288f99-f1dc-4124-a346-c85e12f6c305', # temperature
-                'value': { 'doubleValue': temp },  
+                'value': { 'doubleValue': temp } 
             },
             {
                 'propertyId': 'dd024614-b04b-4820-91e9-48442c8982bf',  # humidity
-                'value': { 'doubleValue': humidity },
+                'value': { 'doubleValue': humidity }
             },
             {
                 'propertyId': '85b95849-2117-4eff-844a-c70f0473308b',  # light
-                'value': { 'doubleValue': lux },
+                'value': { 'doubleValue': lux }
             }
         ]
-        print("after:", time.time())
-
-        print("before")
+        
         entries = []
         for prop in properties:
             entries.append({
@@ -76,8 +77,7 @@ while True:
                 ]
             })
             entry_id += 1 
-        print("after:", time.time())
-        
+
         # Call the BatchPutAssetPropertyValue API
         response = sitewise_client.batch_put_asset_property_value(
             entries=entries
