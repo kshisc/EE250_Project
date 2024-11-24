@@ -4,6 +4,9 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import boto3
 import time
 import grovepi
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Create a boto3 client for IoT SiteWise
 sitewise_client = boto3.client('iotsitewise')
@@ -12,6 +15,7 @@ sitewise_client = boto3.client('iotsitewise')
 # mqtt_client = AWSIoTMQTTClient("RPi")
 # mqtt_client.configureEndpoint("alqez4fmof1su-ats.iot.us-east-1.amazonaws.com", 8883)
 # mqtt_client.configureCredentials("root-CA.crt", "RPi.private.key", "RPi.cert.pem")
+
 # # Connect to AWS IoT Core
 # mqtt_client.connect()
 
