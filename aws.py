@@ -9,7 +9,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Create a boto3 client for IoT SiteWise
+print("before")
 sitewise_client = boto3.client('iotsitewise')
+print("after:", time.time())
 
 # # AWS IoT configuration
 # mqtt_client = AWSIoTMQTTClient("RPi")
@@ -74,7 +76,6 @@ while True:
             })
             entry_id += 1 
 
-        print("Data published:", time.time())
         # Call the BatchPutAssetPropertyValue API
         response = sitewise_client.batch_put_asset_property_value(
             entries=entries
