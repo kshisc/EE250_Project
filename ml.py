@@ -1,5 +1,6 @@
 # ML processing
 from tensorflow.keras.models import load_model
+
 import pickle
 import pandas as pd
 import numpy as np
@@ -30,3 +31,11 @@ def process(temp,hum,lux):
         day = "night"
         
     return (plant, color, day)
+
+# # test Flask web page
+# @app.route("/")
+# def home():
+#     return render_template("index.html", plant="healthy", color="green", day="day")
+
+# if __name__ == "__main__":
+#     app.run(debug=True)
