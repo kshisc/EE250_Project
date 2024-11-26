@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore")
 
 # global variables
 plant = "happy_plant"
+color = "green"
 day = "sun"
 
 def connect():
@@ -99,8 +100,8 @@ def connect():
             print("Data published:", output)
 
             # ML processing
-            global plant,day
-            (plant, day) = ml.process(temp,hum,lux)
+            global plant, color, day
+            (plant, color, day) = ml.process(temp,hum,lux)
         
             time.sleep(2)  # Adjust as needed
         except KeyboardInterrupt:
@@ -111,8 +112,8 @@ def connect():
 # Flask web page
 @app.route("/")
 def home():
-    global plant, day
-    return render_template("index.html", plant=plant, day=day)
+    global plant, color, day
+    return render_template("index.html", plant=plant, color=color, day=day)
 
 if __name__ == "__main__":
     app.run(debug=True)
