@@ -9,3 +9,4 @@ Intructions:
 Libraries:
 AWSIoTPythonSDK.MQTTLib (using MQTT to connect to AWS IOT Core)
 boto3 (runs the API to put data in AWS SiteWise)
+flask

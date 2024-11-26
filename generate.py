@@ -5,7 +5,7 @@ filename = "data.csv"
 
 # Generate 100 entries with random values for temperature and humidity
 data = [
-    {"temperature": round(random.uniform(10, 35), 2), # 18-24 healthy
+    {"temperature": round(random.uniform(10, 35), 2), # 21-27 healthy
      "humidity": round(random.uniform(30, 90), 2)} # 40-60 healthy
     for _ in range(100)
 ]

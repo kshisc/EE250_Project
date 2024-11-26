@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plant Health Monitor</title>
+    <style>
+        .plant {
+            width: 50%;
+            position: relative; 
+            left: 120px;
+            margin-top: 100px;
+        }
+        .day {
+            width: 30%;
+            float: right;
+            margin-bottom: 0px;
+        }
+    </style>
+</head>
+<body style="background-color: #ffcff5;">
+    <h2>Plant Health Monitor:</h2>
+    <img class="day" src="{{ url_for('static', filename= day + '.jpg') }}">
+    <img class="plant" src="{{ url_for('static', filename= plant + '.jpg') }}">
+</body>
+</html>
