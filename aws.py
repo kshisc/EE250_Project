@@ -6,7 +6,7 @@ import grovepi
 import time
 import json
 import warnings
-import ML
+import ml
 
 app = Flask(__name__)
 warnings.filterwarnings("ignore")
@@ -100,7 +100,7 @@ def connect():
 
             # ML processing
             global plant,day
-            (plant, day) = ML.process(temp,hum,lux)
+            (plant, day) = ml.process(temp,hum,lux)
         
             time.sleep(2)  # Adjust as needed
         except KeyboardInterrupt:
