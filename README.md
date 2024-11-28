@@ -1,6 +1,4 @@
 # EE250_Project
-Team members: Kyra Shi
-
 <strong>Introduction</strong>: 
 My project is a plant health monitor. It uses GrovePi sensors to collect data on temperature, humidity, and light, simulating a plant environment. When light reaches a certain threshold, the LED turns on to signal that it is “day.” The RPi continuously sends sensor data to the AWS IOT Sitewise database through an API call, where it is displayed on a dashboard visualizer. A simple ML classification model uses temperature and humidity to predict whether the plant is healthy or not. A flask web page dynamically updates to display different images and text based on the outcome of the prediction.
 
