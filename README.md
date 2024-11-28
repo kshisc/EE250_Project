@@ -15,7 +15,8 @@ One limitation I ran into was not being able to find sufficient data about healt
 
 
 <strong>Diagrams</strong>:
-<img width="582" alt="Screenshot 2024-11-28 at 12 05 40 AM" src="https://github.com/user-attachments/assets/7aedd52a-cfd1-45b3-979f-d356de149130"><br>
+
+<br><img width="582" alt="Screenshot 2024-11-28 at 12 05 40 AM" src="https://github.com/user-attachments/assets/7aedd52a-cfd1-45b3-979f-d356de149130"><br>
 (AWS Dashboard) 
 
 <img width="507" alt="Screenshot 2024-11-28 at 12 06 01 AM" src="https://github.com/user-attachments/assets/ab82c14f-082c-4e5f-bbdd-8d5f2eef563e"><br>
