@@ -14,11 +14,11 @@ One limitation I ran into was not being able to find sufficient data about healt
 
 Diagrams:
 
-<img width="582" alt="Screenshot 2024-11-28 at 12 05 40 AM" src="https://github.com/user-attachments/assets/7aedd52a-cfd1-45b3-979f-d356de149130">
+<img width="582" alt="Screenshot 2024-11-28 at 12 05 40 AM" src="https://github.com/user-attachments/assets/7aedd52a-cfd1-45b3-979f-d356de149130"><br>
 (AWS Dashboard) 
 
-<img width="507" alt="Screenshot 2024-11-28 at 12 06 01 AM" src="https://github.com/user-attachments/assets/ab82c14f-082c-4e5f-bbdd-8d5f2eef563e">
+<img width="507" alt="Screenshot 2024-11-28 at 12 06 01 AM" src="https://github.com/user-attachments/assets/ab82c14f-082c-4e5f-bbdd-8d5f2eef563e"><br>
 (Machine Learning)
 
-<img width="589" alt="Screenshot 2024-11-28 at 12 06 28 AM" src="https://github.com/user-attachments/assets/037487f5-d621-4221-9dd2-8c8f20e188e6">
+<img width="589" alt="Screenshot 2024-11-28 at 12 06 28 AM" src="https://github.com/user-attachments/assets/037487f5-d621-4221-9dd2-8c8f20e188e6"><br>
 (Dynamic Flask Page)
