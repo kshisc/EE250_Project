@@ -1,20 +1,12 @@
 # Sending sensor data to AWS SiteWise and CloudWatch
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-from flask import Flask, render_template
 import boto3
 import grovepi
 import time
 import json
 import warnings
-import ml
 
-app = Flask(__name__)
 warnings.filterwarnings("ignore")
-
-# global variables
-plant = "happy_plant"
-color = "green"
-day = "sun"
 
 def connect():
     # AWS IoT configuration
@@ -98,25 +90,12 @@ def connect():
 
             output = [temp,hum,lux]
             print("Data published:", output)
-
-            # ML processing
-            global plant, color, day
-            (plant, color, day) = ml.process(temp,hum,lux)
         
             time.sleep(2)  # Adjust as needed
         except KeyboardInterrupt:
             break
         except Exception as e:
             print("Error:", e)
-
-# Flask web page
-@app.route("/")
-def home():
-    global plant, color, day
-    return render_template("index.html", plant=plant, color=color, day=day)
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 
 # aws iotsitewise batch-put-asset-property-value --entries '[ 
